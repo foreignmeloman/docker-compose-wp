@@ -1,29 +1,31 @@
 version: '3'
 services:
   # Nginx server configuration   
-  web:
-    image: nginx:latest
-    container_name: webserver_container
+  website-service:
+    image: nginx:1.19
+    container_name: website_container
     depends_on:
-      - docker-mysql
-      - php
+      - mysql-service
+      - php-service
     links:
-      - docker-mysql
-      - php
+      - mysql-service
+      - php-service
     volumes:
       - ./website:/usr/share/nginx/html
       - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/ssl:/etc/ssl/site
     ports:
       - "80:80"
+      - "443:443"
   # php-fpm configuration
-  php:
+  php-service:
     build: ./php
     container_name: php_container
     volumes:
       - ./website:/usr/share/nginx/html
       # - ./php:/usr/local/etc/php/php.ini
   # MySQL configuration
-  docker-mysql:
+  mysql-service:
     image: mysql:5.7
     container_name: mysql_container
     restart: always
