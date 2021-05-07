@@ -1,0 +1,38 @@
+version: '3'
+services:
+  # Nginx server configuration   
+  web:
+    image: nginx:latest
+    container_name: webserver_container
+    depends_on:
+      - docker-mysql
+      - php
+    links:
+      - docker-mysql
+      - php
+    volumes:
+      - ./website:/usr/share/nginx/html
+      - ./nginx:/etc/nginx/conf.d/
+    ports:
+      - "80:80"
+  # php-fpm configuration
+  php:
+    build: ./php
+    container_name: php_container
+    volumes:
+      - ./website:/usr/share/nginx/html
+      # - ./php:/usr/local/etc/php/php.ini
+  # MySQL configuration
+  docker-mysql:
+    image: mysql:5.7
+    container_name: mysql_container
+    restart: always
+    environment:
+        - MYSQL_DATABASE=wordpress
+        - MYSQL_ROOT_PASSWORD=root123
+    # ports:
+    #     - "3306:3306"
+    volumes:
+        - dbdata:/var/lib/mysql
+volumes:
+  dbdata:
