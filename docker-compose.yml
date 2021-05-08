@@ -2,7 +2,7 @@ version: '3'
 services:
   # Nginx server configuration   
   website-service:
-    image: nginx:1.19
+    build: ./nginx
     container_name: website_container
     depends_on:
       - mysql-service
@@ -12,8 +12,6 @@ services:
       - php-service
     volumes:
       - ./website:/usr/share/nginx/html
-      - ./nginx/conf.d:/etc/nginx/conf.d
-      - ./nginx/ssl:/etc/ssl/site
     ports:
       - "80:80"
       - "443:443"
