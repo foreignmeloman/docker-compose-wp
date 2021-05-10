@@ -5,10 +5,7 @@ services:
     build: ./nginx
     container_name: website_container
     depends_on:
-      - mysql-service
-      - php-service
-    links:
-      - mysql-service
+      - percona-service
       - php-service
     volumes:
       - ./website:/usr/share/nginx/html
@@ -23,9 +20,9 @@ services:
       - ./website:/usr/share/nginx/html
       # - ./php:/usr/local/etc/php/php.ini
   # MySQL configuration
-  mysql-service:
-    image: mysql:5.7
-    container_name: mysql_container
+  percona-service:
+    image: percona:8
+    container_name: percona_container
     restart: always
     environment:
         - MYSQL_DATABASE=wordpress
