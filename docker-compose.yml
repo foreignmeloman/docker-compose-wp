@@ -2,7 +2,11 @@ version: '3'
 services:
   # Nginx server configuration   
   website-service:
-    build: ./nginx
+    build:
+      context: ./nginx
+      args:
+        - HTUSER=${HTUSER}
+        - HTPASS=${HTPASS}
     container_name: website_container
     depends_on:
       - percona-service
@@ -25,8 +29,8 @@ services:
     container_name: percona_container
     restart: always
     environment:
-        - MYSQL_DATABASE=wordpress
-        - MYSQL_ROOT_PASSWORD=root123
+      - MYSQL_DATABASE=wordpress
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
     # ports:
     #     - "3306:3306"
     volumes:
