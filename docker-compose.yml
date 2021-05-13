@@ -12,6 +12,7 @@ services:
       - percona-service
       - php-service
     volumes:
+      - ./nginx/conf.d/site.conf:/etc/nginx/conf.d/site.conf
       - ./website:/usr/share/nginx/html
     ports:
       - "80:80"
@@ -22,7 +23,6 @@ services:
     container_name: php_container
     volumes:
       - ./website:/usr/share/nginx/html
-      # - ./php:/usr/local/etc/php/php.ini
   # MySQL configuration
   percona-service:
     image: percona:8
@@ -31,8 +31,6 @@ services:
     environment:
       - MYSQL_DATABASE=wordpress
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-    # ports:
-    #     - "3306:3306"
     volumes:
         - dbdata:/var/lib/mysql
 volumes:
