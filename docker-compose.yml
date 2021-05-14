@@ -9,10 +9,12 @@ services:
         - HTPASS=${HTPASS}
     container_name: website_container
     depends_on:
+      - htpasswd-service
       - percona-service
       - php-service
     volumes:
       - ./nginx/conf.d/site.conf:/etc/nginx/conf.d/site.conf
+      - ./nginx/htpasswd/.htpasswd:/usr/share/nginx/.htpasswd
       - ./website:/usr/share/nginx/html
     ports:
       - "80:80"
@@ -21,6 +23,8 @@ services:
   php-service:
     build: ./php
     container_name: php_container
+    depends_on:
+      - percona-service
     volumes:
       - ./website:/usr/share/nginx/html
   # MySQL configuration
@@ -33,5 +37,13 @@ services:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
     volumes:
         - dbdata:/var/lib/mysql
+  htpasswd-service:
+    build: ./nginx/htpasswd
+    container_name: htpasswd_container
+    environment:
+      - HTUSER=${HTUSER}
+      - HTPASS=${HTPASS}
+    volumes:
+      - ./nginx/htpasswd:/tmp/htpasswd
 volumes:
   dbdata:
