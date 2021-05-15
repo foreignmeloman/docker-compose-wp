@@ -2,19 +2,17 @@ version: '3'
 services:
   # Nginx server configuration   
   website-service:
-    build:
-      context: ./nginx
-      args:
-        - HTUSER=${HTUSER}
-        - HTPASS=${HTPASS}
+    image: nginx:1.19
     container_name: website_container
     depends_on:
-      - htpasswd-service
+      - setup-service
       - percona-service
       - php-service
     volumes:
       - ./nginx/conf.d/site.conf:/etc/nginx/conf.d/site.conf
       - ./nginx/htpasswd/.htpasswd:/usr/share/nginx/.htpasswd
+      - ./nginx/ssl/site.crt:/etc/ssl/certs/site.crt
+      - ./nginx/ssl/site.key:/etc/ssl/private/site.key
       - ./website:/usr/share/nginx/html
     ports:
       - "80:80"
@@ -33,17 +31,25 @@ services:
     container_name: percona_container
     restart: always
     environment:
-      - MYSQL_DATABASE=wordpress
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
     volumes:
         - dbdata:/var/lib/mysql
-  htpasswd-service:
-    build: ./nginx/htpasswd
-    container_name: htpasswd_container
+  setup-service:
+    build: ./setup
+    container_name: setup_container
     environment:
       - HTUSER=${HTUSER}
       - HTPASS=${HTPASS}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
     volumes:
       - ./nginx/htpasswd:/tmp/htpasswd
+      - ./nginx/ssl:/tmp/ssl
+      - ./website:/tmp/website
 volumes:
   dbdata:

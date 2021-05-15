@@ -1,3 +1,4 @@
+/nginx/htpasswd
+/nginx/ssl
 /website
 /.env
-.htpasswd
