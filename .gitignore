@@ -1,4 +1,5 @@
 /nginx/htpasswd
 /nginx/ssl
 /website
+/xtradb/cert
 /.env

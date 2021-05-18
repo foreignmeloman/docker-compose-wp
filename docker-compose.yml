@@ -51,5 +51,6 @@ services:
       - ./nginx/htpasswd:/tmp/htpasswd
       - ./nginx/ssl:/tmp/ssl
       - ./website:/tmp/website
+      - ./xtradb/cert:/tmp/xtradb/cert
 volumes:
   dbdata:
